@@ -1,6 +1,6 @@
 # pylogger
-![alt text][logo]
+![logo][logo]
 Python Keylogger
 
-[logo]: https://github.com/inknos/pylogger/logo.png "Pylogger logo"
+[logo]: https://github.com/inknos/pylogger/blob/master/logo.png "Pylogger logo"
 
