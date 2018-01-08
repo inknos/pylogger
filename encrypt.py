@@ -1,26 +1,31 @@
-from Crypto.Cipher import AES
-import base64
-from head import *
+"""
 
-msg_text = 'test some plain text here'.rjust(32)
-try:
-  encrypt_key
-except NameError:
-  encrypt_key = '1234567890123456' # create new & store somewhere safe
+following this example from
+http://docs.python-guide.org/en/latest/scenarios/crypto/
 
+from cryptography.fernet import Fernet
+key = Fernet.generate_key() #this is your "password"
+cipher_suite = Fernet(key)
+encoded_text = cipher_suite.encrypt(b"Hello stackoverflow!")
+decoded_text = cipher_suite.decrypt(encoded_text)
 
-def crypt(to_encrypt):
-  cipher = AES.new(encrypt_key, AES.MODE_ECB) # never use ECB in strong systems obviously
-  encoded = base64.b64encode(cipher.encrypt(to_encrypt))
-  return encoded
+NOT safe cryptographic way!!! DIDACTIC PURPOSE
 
+"""
 
-def decrypt(to_decrypt):
-  cipher = AES.new(encrypt_key, AES.MODE_ECB) # never use ECB in strong systems obviously
-  decoded = cipher.decrypt(base64.b64decode(encoded))
-  return decoded
+from cryptography.fernet import Fernet
 
 
-#print encoded
-# ...
-#print decoded.strip()
+class simpleCrypt:
+    def __init__(self, key = "abcde"):
+        self.key = key
+        self.key = 'F8tcioZ_84LHMZO4AzM0oM3apM3TRbWVon4Xqsq7qUE='
+        #Fernet.generate_key() #this is your "password"
+        self.cipher_suite = Fernet(self.key)
+
+    def encode(self, text=""):
+        return self.cipher_suite.encrypt(bytes(text))
+    
+    def decode(self, text=""):
+        return self.cipher_suite.decrypt(bytes(text))
+    
